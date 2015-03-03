@@ -1,0 +1,21 @@
+.swipegallery_widget
+  width: 100%
+  height: 100%
+  .swipe_gallery
+    position: relative
+    width: 100%
+    height: 100%
+    overflow: hidden
+    & > .ul_overflow
+      overflow: hidden
+      height: 100%
+      position: relative
+      & > ul
+        position: relative
+        height: 100%
+        &.animate
+          transition: all .6s ease
+        & > li
+          position: absolute
+  .arrow_left, .arrow_right
+    user-select: none
