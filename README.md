@@ -1,4 +1,4 @@
-# Scroll component view for generator-sp
+# Swipe gallery component view for generator-sp
 
 Usefull only with [generator-sp](https://github.com/snphq/generator-sp).
 

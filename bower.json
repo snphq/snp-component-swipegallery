@@ -1,27 +1,32 @@
 {
-  "name": "projects",
-  "private": true,
+  "name": "snp-component-swipegallery",
+  "version": "0.0.0",
+  "homepage": "https://github.com/snphq/snp-component-swipegallery",
+  "authors": [
+    "Aleksey Krylov <aleksey.krylov@saltpepper.ru>",
+    "Maksim Koretskiy <maksim.koretskiy@saltpepper.ru>"
+  ],
+  "description": "Swipe gallery component view for generator-sp",
+  "main": "dist/SwipeGalleryComponent.js",
+  "keywords": [
+    "generator-sp",
+    "component",
+    "backbone",
+    "swipegallery",
+    "swipe",
+    "gallery"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
   "dependencies": {
-    "requirejs": "~2.1.10",
-    "modernizr": "~2.8.2",
-    "jquery": "~1.11.1",
-    "backbone": "~1.1.1",
-    "backbone.epoxy": "~1.3.1",
+    "swipegallery": "~0.2.8",
     "backbone-mixin": "~0.3.5",
-    "lodash": "~2.4.1",
-    "sp-utils-middleware": "~0.0.4",
-    "sp-utils-serverclient": "~0.0.5",
-    "sp-utils-gaconstructor": "~0.0.7",
-    "sp-utils-bootstrapmodal": "~0.1.1",
-    "sp-utils-paginatecollection": "~0.0.1",
-    "bootstrap-sass-official": "~3.2.0",
-    "cookies-js": "~1.0.0",
-    "simple-blocks": "~0.0.3",
-    "fontawesome": "~4.2.0",
-    "reset-css": "*",
-    "swipegallery": "~0.2.8"
-  },
-  "resolutions": {
-    "jquery": "~1.11.1"
+    "backbone.epoxy": "~1.3.1"
   }
 }
