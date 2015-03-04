@@ -1,10 +1,9 @@
-/*! projects undefined */
+/*! snp-component-swipegallery 0.0.0 */
 define(function(require, exports, module) {
-  var SuperView, SwipeGallery, SwipeGalleryCollection, SwipeGalleryComponent, SwipeGalleryItem, SwipeGalleryModel, _List, _Widget;
-  _Widget = require("../_Widget");
-  _List = require("view/list/_List");
+  var Backbone, SuperView, SwipeGallery, SwipeGalleryCollection, SwipeGalleryComponent, SwipeGalleryItem, SwipeGalleryModel;
+  Backbone = require("backbone");
   require("epoxy");
-  SuperView = MixinBackbone(Backbone.View);
+  SuperView = MixinBackbone(Backbone.Epoxy.View);
   SwipeGallery = require('swipeGallery');
   SwipeGalleryModel = Backbone.Epoxy.Model;
   SwipeGalleryCollection = Backbone.Collection.extend({
@@ -15,14 +14,14 @@ define(function(require, exports, module) {
     className: "swipegallery_item"
   });
   return SwipeGalleryComponent = SuperView.extend({
-    template: "#SwipeGalleryWidget",
-    className: "swipegallery_widget",
+    template: "#SwipeGalleryComponent",
+    className: "swipegallery_component",
     ui: {
-      galleryBlock: ".swipe_gallery",
-      galleryList: ".swipe_gallery>.ul_overflow>ul",
-      controls: ".swipe_gallery>.controls_overflow .control",
-      arrowLeft: ".swipe_gallery>.arrow_left",
-      arrowRight: ".swipe_gallery>.arrow_right"
+      galleryBlock: "[data-js-block]",
+      galleryList: "[data-js-list]",
+      arrowLeft: "[data-js-side-left]",
+      arrowRight: "[data-js-side-right]",
+      controls: ".controls_overflow .control"
     },
     events: {
       "smartclick @ui.controls": "onControlClick",

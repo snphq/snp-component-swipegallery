@@ -1,7 +1,8 @@
 define (require, exports, module)->
+  Backbone = require "backbone"
   require "epoxy"
 
-  SuperView = MixinBackbone(Backbone.View)
+  SuperView = MixinBackbone(Backbone.Epoxy.View)
 
   SwipeGallery = require 'swipeGallery'
 
@@ -22,11 +23,11 @@ define (require, exports, module)->
     className: "swipegallery_component"
 
     ui:
-      galleryBlock: ".swipe_gallery"
-      galleryList: ".swipe_gallery>.ul_overflow>ul"
-      controls: ".swipe_gallery>.controls_overflow .control"
-      arrowLeft: ".swipe_gallery>.arrow_left"
-      arrowRight: ".swipe_gallery>.arrow_right"
+      galleryBlock: "[data-js-block]"
+      galleryList: "[data-js-list]"
+      arrowLeft: "[data-js-side-left]"
+      arrowRight: "[data-js-side-right]"
+      controls: ".controls_overflow .control"
 
     events:
       "smartclick @ui.controls": "onControlClick"
