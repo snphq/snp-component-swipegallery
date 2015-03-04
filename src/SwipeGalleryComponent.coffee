@@ -1,6 +1,4 @@
 define (require, exports, module)->
-  _Widget = require "../_Widget"
-  _List = require "view/list/_List"
   require "epoxy"
 
   SuperView = MixinBackbone(Backbone.View)
@@ -20,8 +18,8 @@ define (require, exports, module)->
 
 
   SwipeGalleryComponent = SuperView.extend
-    template: "#SwipeGalleryWidget"
-    className: "swipegallery_widget"
+    template: "#SwipeGalleryComponent"
+    className: "swipegallery_component"
 
     ui:
       galleryBlock: ".swipe_gallery"
