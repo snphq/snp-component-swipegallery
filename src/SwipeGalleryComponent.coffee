@@ -2,19 +2,24 @@ define (require, exports, module)->
   _Widget = require "../_Widget"
   _List = require "view/list/_List"
   require "epoxy"
+
+  SuperView = MixinBackbone(Backbone.View)
+
   SwipeGallery = require 'swipeGallery'
 
   SwipeGalleryModel = Backbone.Epoxy.Model
 
+
   SwipeGalleryCollection = Backbone.Collection.extend
     model: SwipeGalleryModel
 
-  SwipeGalleryItem = _List.extend
+
+  SwipeGalleryItem = SuperView.extend
     template: "#SwipeGalleryItem"
     className: "swipegallery_item"
 
 
-  SwipeGalleryWidget = _Widget.extend
+  SwipeGalleryComponent = SuperView.extend
     template: "#SwipeGalleryWidget"
     className: "swipegallery_widget"
 
@@ -34,8 +39,6 @@ define (require, exports, module)->
       "@ui.galleryList": "collection: $collection"
 
     itemView: SwipeGalleryItem
-
-
 
     initialize: ->
       @renderAsync = $.Deferred()
@@ -59,7 +62,6 @@ define (require, exports, module)->
         _.each itemMas, (item)=>
           galleryModels.push @collection.models[item.index]
         @onChangeGallery(index, galleryModels, dirrection)
-
 
     onChangeCollection: (el1, el2)->
       @renderAsync.done =>
