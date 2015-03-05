@@ -1,6 +1,5 @@
 define (require, exports, module)->
   Backbone = require "backbone"
-  require "epoxy"
 
   SuperView = MixinBackbone(Backbone.Epoxy.View)
 
@@ -34,8 +33,6 @@ define (require, exports, module)->
       "smartclick @ui.arrowLeft": "onClickLeft"
       "smartclick @ui.arrowRight": "onClickRight"
 
-    bindings:
-      "@ui.galleryList": "collection: $collection"
 
     itemView: SwipeGalleryItem
 
@@ -46,14 +43,35 @@ define (require, exports, module)->
       @options.onChange = _.bind @onChange, this
       @collection ?= new SwipeGalleryCollection
       # Для создания галлереи
-      @listenToOnce @collection, 'reset', @onChangeCollection
+      @listenTo @collection, 'reset', @onResetCollection
+      @listenTo @collection, 'add', @onAddCollection
+      @listenTo @collection, 'remove', @onRemoveCollection
 
     render: ->
       @renderAsync.resolve()
-      # Чтобы сначала вызывался обработчик для создания элемента (в initialize view) а после обработчик наш
-      @listenTo @collection, 'reset', @onChangeCollection
-      @listenTo @collection, 'add', @onChangeCollection
-      @listenTo @collection, 'remove', @onChangeCollection
+
+    onAddCollection: (model)->
+      @renderAsync.done =>
+        item = new @itemView {model, parentView: this}
+        @items[model.cid] = item
+        @ui.galleryList.append item.$el
+        @onChangeCollection()
+
+    onRemoveCollection: (model)->
+      @renderAsync.done =>
+        @items[model.cid].remove()
+        @onChangeCollection()
+
+    onResetCollection: (newCollection)->
+      @renderAsync.done =>
+        _.each @items, (value, key)->
+          value.remove()
+        @items = {}
+        _.each newCollection.models, (model)=>
+          item = new @itemView {model, parentView: @}
+          @items[model.cid] = item
+          @ui.galleryList.append item.$el
+        @onChangeCollection()
 
     onChange: (index, max, itemMas, dirrection)->
       if @onChangeGallery
@@ -62,12 +80,11 @@ define (require, exports, module)->
           galleryModels.push @collection.models[item.index]
         @onChangeGallery(index, galleryModels, dirrection)
 
-    onChangeCollection: (el1, el2)->
-      @renderAsync.done =>
-        if @galery
-          @galery.update()
-        else
-          @galery = new SwipeGallery @options
+    onChangeCollection: ->
+      if @galery
+        @galery.update()
+      else
+        @galery = new SwipeGallery @options
 
     setOptions: (options)->
       _.extend @options, options
