@@ -1,8 +1,7 @@
-/*! snp-component-swipegallery 0.0.0 */
+/*! snp-component-swipegallery 0.0.1 */
 define(function(require, exports, module) {
   var Backbone, SuperView, SwipeGallery, SwipeGalleryCollection, SwipeGalleryComponent, SwipeGalleryItem, SwipeGalleryModel;
   Backbone = require("backbone");
-  require("epoxy");
   SuperView = MixinBackbone(Backbone.Epoxy.View);
   SwipeGallery = require('swipeGallery');
   SwipeGalleryModel = Backbone.Epoxy.Model;
@@ -28,9 +27,6 @@ define(function(require, exports, module) {
       "smartclick @ui.arrowLeft": "onClickLeft",
       "smartclick @ui.arrowRight": "onClickRight"
     },
-    bindings: {
-      "@ui.galleryList": "collection: $collection"
-    },
     itemView: SwipeGalleryItem,
     initialize: function() {
       this.renderAsync = $.Deferred();
@@ -42,13 +38,54 @@ define(function(require, exports, module) {
       if (this.collection == null) {
         this.collection = new SwipeGalleryCollection;
       }
-      return this.listenToOnce(this.collection, 'reset', this.onChangeCollection);
+      this.listenTo(this.collection, 'reset', this.onResetCollection);
+      this.listenTo(this.collection, 'add', this.onAddCollection);
+      return this.listenTo(this.collection, 'remove', this.onRemoveCollection);
     },
     render: function() {
-      this.renderAsync.resolve();
-      this.listenTo(this.collection, 'reset', this.onChangeCollection);
-      this.listenTo(this.collection, 'add', this.onChangeCollection);
-      return this.listenTo(this.collection, 'remove', this.onChangeCollection);
+      return this.renderAsync.resolve();
+    },
+    onAddCollection: function(model) {
+      return this.renderAsync.done((function(_this) {
+        return function() {
+          var item;
+          item = new _this.itemView({
+            model: model,
+            parentView: _this
+          });
+          _this.items[model.cid] = item;
+          _this.ui.galleryList.append(item.$el);
+          return _this.onChangeCollection();
+        };
+      })(this));
+    },
+    onRemoveCollection: function(model) {
+      return this.renderAsync.done((function(_this) {
+        return function() {
+          _this.items[model.cid].remove();
+          return _this.onChangeCollection();
+        };
+      })(this));
+    },
+    onResetCollection: function(newCollection) {
+      return this.renderAsync.done((function(_this) {
+        return function() {
+          _.each(_this.items, function(value, key) {
+            return value.remove();
+          });
+          _this.items = {};
+          _.each(newCollection.models, function(model) {
+            var item;
+            item = new _this.itemView({
+              model: model,
+              parentView: _this
+            });
+            _this.items[model.cid] = item;
+            return _this.ui.galleryList.append(item.$el);
+          });
+          return _this.onChangeCollection();
+        };
+      })(this));
     },
     onChange: function(index, max, itemMas, dirrection) {
       var galleryModels;
@@ -62,16 +99,12 @@ define(function(require, exports, module) {
         return this.onChangeGallery(index, galleryModels, dirrection);
       }
     },
-    onChangeCollection: function(el1, el2) {
-      return this.renderAsync.done((function(_this) {
-        return function() {
-          if (_this.galery) {
-            return _this.galery.update();
-          } else {
-            return _this.galery = new SwipeGallery(_this.options);
-          }
-        };
-      })(this));
+    onChangeCollection: function() {
+      if (this.galery) {
+        return this.galery.update();
+      } else {
+        return this.galery = new SwipeGallery(this.options);
+      }
     },
     setOptions: function(options) {
       return _.extend(this.options, options);
