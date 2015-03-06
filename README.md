@@ -16,11 +16,6 @@ Add js requirements reference to `main.coffee`
 require.config
   paths:
     'swipeGallery': "#{VENDOR_PATH}/swipegallery/src/SwipeGallery"
-
-  shim
-    swipeGallery:
-      deps: ["jquery"]
-      exports:"SwipeGallery"
 ```
 
 Generate view Widget from generator-sp
