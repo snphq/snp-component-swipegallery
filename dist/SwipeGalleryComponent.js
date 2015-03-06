@@ -1,4 +1,4 @@
-/*! snp-component-swipegallery 0.0.2 */
+/*! snp-component-swipegallery 0.0.4 */
 var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -35,9 +35,9 @@ define(function(require, exports, module) {
     };
 
     SwipeGalleryComponent.prototype.events = {
-      "smartclick @ui.controls": "onControlClick",
-      "smartclick @ui.arrowLeft": "onClickLeft",
-      "smartclick @ui.arrowRight": "onClickRight"
+      "click @ui.controls": "onControlClick",
+      "click @ui.arrowLeft": "onClickLeft",
+      "click @ui.arrowRight": "onClickRight"
     };
 
     function SwipeGalleryComponent() {
@@ -48,13 +48,19 @@ define(function(require, exports, module) {
       SwipeGalleryComponent.__super__.constructor.apply(this, arguments);
     }
 
+    SwipeGalleryComponent.prototype.onChangeSlide = null;
+
     SwipeGalleryComponent.prototype.initialize = function() {
       this.renderAsync = $.Deferred();
       this.options = {
         selector: this.ui.galleryBlock
       };
-      this.onChangeGallery = null;
-      this.options.onChange = _.bind(this.onChange, this);
+      this.options.onChange = _.bind(this.onSliderChange, this);
+      this.initCollection();
+      return this.items = {};
+    };
+
+    SwipeGalleryComponent.prototype.initCollection = function() {
       if (this.collection == null) {
         this.collection = new SwipeGalleryCollection;
       }
@@ -64,29 +70,39 @@ define(function(require, exports, module) {
     };
 
     SwipeGalleryComponent.prototype.render = function() {
+      _.each(this.collection.models, (function(_this) {
+        return function(model) {
+          _this.renderItem(model);
+          return _this.refreshPlugin();
+        };
+      })(this));
       return this.renderAsync.resolve();
     };
 
     SwipeGalleryComponent.prototype.onAddCollection = function(model) {
       return this.renderAsync.done((function(_this) {
         return function() {
-          var item;
-          item = new _this.itemView({
-            model: model,
-            parentView: _this
-          });
-          _this.items[model.cid] = item;
-          _this.ui.galleryList.append(item.$el);
-          return _this.onChangeCollection();
+          _this.renderItem(model);
+          return _this.refreshPlugin();
         };
       })(this));
+    };
+
+    SwipeGalleryComponent.prototype.renderItem = function(model) {
+      var item;
+      item = new this.itemView({
+        model: model,
+        parentView: this
+      });
+      this.items[model.cid] = item;
+      return this.ui.galleryList.append(item.$el);
     };
 
     SwipeGalleryComponent.prototype.onRemoveCollection = function(model) {
       return this.renderAsync.done((function(_this) {
         return function() {
           _this.items[model.cid].remove();
-          return _this.onChangeCollection();
+          return _this.refreshPlugin();
         };
       })(this));
     };
@@ -94,38 +110,41 @@ define(function(require, exports, module) {
     SwipeGalleryComponent.prototype.onResetCollection = function(newCollection) {
       return this.renderAsync.done((function(_this) {
         return function() {
-          _.each(_this.items, function(value, key) {
+          _.each(_this.items, function(value) {
             return value.remove();
           });
           _this.items = {};
           _.each(newCollection.models, function(model) {
-            var item;
-            item = new _this.itemView({
-              model: model,
-              parentView: _this
-            });
-            _this.items[model.cid] = item;
-            return _this.ui.galleryList.append(item.$el);
+            return _this.renderItem(model);
           });
-          return _this.onChangeCollection();
+          return _this.refreshPlugin();
         };
       })(this));
     };
 
-    SwipeGalleryComponent.prototype.onChange = function(index, max, itemMas, dirrection) {
+    SwipeGalleryComponent.prototype.onSliderChange = function(index, max, itemMas, dirrection) {
       var galleryModels;
-      if (this.onChangeGallery) {
-        galleryModels = [];
-        _.each(itemMas, (function(_this) {
-          return function(item) {
-            return galleryModels.push(_this.collection.models[item.index]);
-          };
-        })(this));
-        return this.onChangeGallery(index, galleryModels, dirrection);
+      galleryModels = [];
+      _.each(itemMas, (function(_this) {
+        return function(item) {
+          return galleryModels.push(_this.collection.models[item.index]);
+        };
+      })(this));
+      this.trigger("onChangeSlide", {
+        index: index,
+        galleryModels: galleryModels,
+        dirrection: dirrection
+      });
+      if (this.onChangeSlide) {
+        return this.onChangeSlide({
+          index: index,
+          galleryModels: galleryModels,
+          dirrection: dirrection
+        });
       }
     };
 
-    SwipeGalleryComponent.prototype.onChangeCollection = function() {
+    SwipeGalleryComponent.prototype.refreshPlugin = function() {
       if (this.galery) {
         return this.galery.update();
       } else {
