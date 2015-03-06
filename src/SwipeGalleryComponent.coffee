@@ -39,7 +39,8 @@ define (require, exports, module)->
 
     onChangeSlide:null
 
-    initialize: (options)->
+    initialize: ({options})->
+      options ?= {}
       @options = _.defaults options, {
         selector: @ui.galleryBlock
       }
