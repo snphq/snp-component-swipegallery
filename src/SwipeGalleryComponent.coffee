@@ -28,9 +28,9 @@ define (require, exports, module)->
       controls: ".controls_overflow .control"
 
     events:
-      "smartclick @ui.controls": "onControlClick"
-      "smartclick @ui.arrowLeft": "onClickLeft"
-      "smartclick @ui.arrowRight": "onClickRight"
+      "click @ui.controls": "onControlClick"
+      "click @ui.arrowLeft": "onClickLeft"
+      "click @ui.arrowRight": "onClickRight"
 
     constructor: ->
       unless @itemView
@@ -38,51 +38,57 @@ define (require, exports, module)->
       @itemView = extendItemView @itemView
       super
 
+    onChangeSlide:null
+
     initialize: ->
       @renderAsync = $.Deferred()
       @options = {selector: @ui.galleryBlock}
-      @onChangeGallery = null
-      @options.onChange = _.bind @onChange, this
+      @options.onChange = _.bind @onSliderChange, this
+      @initCollection()
+      @items = {}
+
+    initCollection: ->
       @collection ?= new SwipeGalleryCollection
-      # Для создания галлереи
       @listenTo @collection, 'reset', @onResetCollection
       @listenTo @collection, 'add', @onAddCollection
       @listenTo @collection, 'remove', @onRemoveCollection
 
     render: ->
+      _.each @collection.models, (model)=>
+        @renderItem model
+        @refreshPlugin()
       @renderAsync.resolve()
 
     onAddCollection: (model)->
       @renderAsync.done =>
-        item = new @itemView {model, parentView: this}
-        @items[model.cid] = item
-        @ui.galleryList.append item.$el
-        @onChangeCollection()
+        @renderItem model
+        @refreshPlugin()
+
+    renderItem: (model)->
+      item = new @itemView {model, parentView: this}
+      @items[model.cid] = item
+      @ui.galleryList.append item.$el
 
     onRemoveCollection: (model)->
       @renderAsync.done =>
         @items[model.cid].remove()
-        @onChangeCollection()
+        @refreshPlugin()
 
     onResetCollection: (newCollection)->
       @renderAsync.done =>
-        _.each @items, (value, key)->
-          value.remove()
+        _.each @items, (value)-> value.remove()
         @items = {}
-        _.each newCollection.models, (model)=>
-          item = new @itemView {model, parentView: @}
-          @items[model.cid] = item
-          @ui.galleryList.append item.$el
-        @onChangeCollection()
+        _.each newCollection.models, (model)=> @renderItem model
+        @refreshPlugin()
 
-    onChange: (index, max, itemMas, dirrection)->
-      if @onChangeGallery
-        galleryModels = []
-        _.each itemMas, (item)=>
-          galleryModels.push @collection.models[item.index]
-        @onChangeGallery(index, galleryModels, dirrection)
+    onSliderChange: (index, max, itemMas, dirrection)->
+      galleryModels = []
+      _.each itemMas, (item)=>
+        galleryModels.push @collection.models[item.index]
+      @trigger "onChangeSlide", {index, galleryModels, dirrection}
+      @onChangeSlide {index, galleryModels, dirrection} if @onChangeSlide
 
-    onChangeCollection: ->
+    refreshPlugin: ->
       if @galery
         @galery.update()
       else
@@ -94,15 +100,13 @@ define (require, exports, module)->
     onControlClick: (e)->
       @galery.goTo $(e.currentTarget).index()
 
-    onClickLeft: ->
-      @galery.prev()
-    onClickRight: ->
-      @galery.next()
+    onClickLeft: -> @galery.prev()
+
+    onClickRight: -> @galery.next()
 
     onShow:->
       $(window).on "resize.swipe"+@cid,  =>
-        if @galery
-          @galery.update()
+        @galery.update() if @galery
 
     onClose:->
       $(window).off "resize.swipe"+@cid
