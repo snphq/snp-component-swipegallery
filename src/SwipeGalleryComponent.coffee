@@ -1,6 +1,5 @@
 define (require, exports, module)->
   Backbone = require "backbone"
-
   SuperView = MixinBackbone(Backbone.Epoxy.View)
 
   SwipeGallery = require 'swipeGallery'
@@ -40,10 +39,12 @@ define (require, exports, module)->
 
     onChangeSlide:null
 
-    initialize: ->
-      @renderAsync = $.Deferred()
-      @options = {selector: @ui.galleryBlock}
+    initialize: (options)->
+      @options = _.defaults options, {
+        selector: @ui.galleryBlock
+      }
       @options.onChange = _.bind @onSliderChange, this
+      @renderAsync = $.Deferred()
       @initCollection()
       @items = {}
 
