@@ -11,13 +11,12 @@ define (require, exports, module)->
   SwipeGalleryCollection = Backbone.Collection.extend
     model: SwipeGalleryModel
 
+  extendItemView = (view)->
+    className = view.prototype.className or ""
+    className = "#{className} swipegallery_component--item"
+    view.extend {className}
 
-  SwipeGalleryItem = SuperView.extend
-    template: "#SwipeGalleryItem"
-    className: "swipegallery_item"
-
-
-  SwipeGalleryComponent = SuperView.extend
+  class SwipeGalleryComponent extends SuperView
     template: "#SwipeGalleryComponent"
     className: "swipegallery_component"
 
@@ -33,8 +32,11 @@ define (require, exports, module)->
       "smartclick @ui.arrowLeft": "onClickLeft"
       "smartclick @ui.arrowRight": "onClickRight"
 
-
-    itemView: SwipeGalleryItem
+    constructor: ->
+      unless @itemView
+        throw "SwipeGallery: itemView was not set"
+      @itemView = extendItemView @itemView
+      super
 
     initialize: ->
       @renderAsync = $.Deferred()

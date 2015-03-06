@@ -1,6 +1,6 @@
 {
   "name": "snp-component-swipegallery",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Swipe gallery component view for generator-sp",
   "main": "gulpfile.js",
   "scripts": {

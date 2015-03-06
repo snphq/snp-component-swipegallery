@@ -1,6 +1,7 @@
 gulp = require('gulp')
 coffee = require('gulp-coffee')
 header = require('gulp-header')
+bump = require('gulp-header')
 gutil = require('gulp-util')
 
 pkg = require('./bower.json')
