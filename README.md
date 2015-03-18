@@ -53,6 +53,8 @@ Add component region into view, where You want install gallery
 **coffee** 
 ```coffee
   SwipeItem = require "view/list/SwipeItem/SwipeItem"
+  SwipeGalleryComponent = require "SwipeGalleryComponent"
+  
   SwipePage = _Page.extend
     template: "#SwipePage"
     className: "swipe_page"
@@ -119,7 +121,7 @@ When standart swipegallery component installed, it generates markup:
 
 `.ul_overflow` contains slides;
 
-`.side_left`, `.side_right` - standart arrows, are not styled by default;
+`.arrow_left`, `.arrow_right` - standart arrows, are not styled by default;
 
 `.controls` - navigation.
 
@@ -174,7 +176,7 @@ initialize or `setOptions` method.
 ```coffee
   @r.gallery.setOptions {
     loop: true,
-    elementsOnSide: 4,
+    elementsOnSide: 1,
     positionActive: 'center'
   }
 ```

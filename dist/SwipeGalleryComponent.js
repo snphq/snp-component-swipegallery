@@ -1,4 +1,4 @@
-/*! snp-component-swipegallery 0.0.4 */
+/*! snp-component-swipegallery 0.0.5 */
 var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -29,8 +29,8 @@ define(function(require, exports, module) {
     SwipeGalleryComponent.prototype.ui = {
       galleryBlock: "[data-js-block]",
       galleryList: "[data-js-list]",
-      arrowLeft: "[data-js-side-left]",
-      arrowRight: "[data-js-side-right]",
+      arrowLeft: ".arrow_left",
+      arrowRight: ".arrow_right",
       controls: ".controls_overflow .control"
     };
 
@@ -50,12 +50,17 @@ define(function(require, exports, module) {
 
     SwipeGalleryComponent.prototype.onChangeSlide = null;
 
-    SwipeGalleryComponent.prototype.initialize = function() {
-      this.renderAsync = $.Deferred();
-      this.options = {
+    SwipeGalleryComponent.prototype.initialize = function(arg) {
+      var options;
+      options = arg.options;
+      if (options == null) {
+        options = {};
+      }
+      this.options = _.defaults(options, {
         selector: this.ui.galleryBlock
-      };
+      });
       this.options.onChange = _.bind(this.onSliderChange, this);
+      this.renderAsync = $.Deferred();
       this.initCollection();
       return this.items = {};
     };

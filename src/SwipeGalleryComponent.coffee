@@ -22,8 +22,8 @@ define (require, exports, module)->
     ui:
       galleryBlock: "[data-js-block]"
       galleryList: "[data-js-list]"
-      arrowLeft: "[data-js-side-left]"
-      arrowRight: "[data-js-side-right]"
+      arrowLeft: ".arrow_left"
+      arrowRight: ".arrow_right"
       controls: ".controls_overflow .control"
 
     events:
