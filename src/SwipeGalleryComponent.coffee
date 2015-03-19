@@ -48,6 +48,11 @@ define (require, exports, module)->
       @renderAsync = $.Deferred()
       @initCollection()
       @items = {}
+      if @collection.models.length != 0
+        @renderAsync.done =>
+          _.each @collection.models, (model)=>
+            @renderItem model
+          @refreshPlugin()
 
     initCollection: ->
       @collection ?= new SwipeGalleryCollection
@@ -56,9 +61,6 @@ define (require, exports, module)->
       @listenTo @collection, 'remove', @onRemoveCollection
 
     render: ->
-      _.each @collection.models, (model)=>
-        @renderItem model
-        @refreshPlugin()
       @renderAsync.resolve()
 
     onAddCollection: (model)->
