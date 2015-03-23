@@ -48,11 +48,8 @@ define (require, exports, module)->
       @renderAsync = $.Deferred()
       @initCollection()
       @items = {}
-      if @collection.models.length != 0
-        @renderAsync.done =>
-          _.each @collection.models, (model)=>
-            @renderItem model
-          @refreshPlugin()
+      if @collection.length != 0
+        @rerenderAll @collection
 
     initCollection: ->
       @collection ?= new SwipeGalleryCollection
@@ -78,11 +75,13 @@ define (require, exports, module)->
         @items[model.cid].remove()
         @refreshPlugin()
 
-    onResetCollection: (newCollection)->
+    onResetCollection: (newCollection)-> @rerenderAll newCollection
+
+    rerenderAll: (collection)->
       @renderAsync.done =>
         _.each @items, (value)-> value.remove()
         @items = {}
-        _.each newCollection.models, (model)=> @renderItem model
+        _.each collection.models, (model)=> @renderItem model
         @refreshPlugin()
 
     onSliderChange: (index, max, itemMas, dirrection)->
