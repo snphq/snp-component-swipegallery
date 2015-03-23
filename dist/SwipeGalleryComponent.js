@@ -1,4 +1,4 @@
-/*! snp-component-swipegallery 0.0.5 */
+/*! snp-component-swipegallery 0.0.7 */
 var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -63,15 +63,8 @@ define(function(require, exports, module) {
       this.renderAsync = $.Deferred();
       this.initCollection();
       this.items = {};
-      if (this.collection.models.length !== 0) {
-        return this.renderAsync.done((function(_this) {
-          return function() {
-            _.each(_this.collection.models, function(model) {
-              return _this.renderItem(model);
-            });
-            return _this.refreshPlugin();
-          };
-        })(this));
+      if (this.collection.length !== 0) {
+        return this.rerenderAll(this.collection);
       }
     };
 
@@ -117,13 +110,17 @@ define(function(require, exports, module) {
     };
 
     SwipeGalleryComponent.prototype.onResetCollection = function(newCollection) {
+      return this.rerenderAll(newCollection);
+    };
+
+    SwipeGalleryComponent.prototype.rerenderAll = function(collection) {
       return this.renderAsync.done((function(_this) {
         return function() {
           _.each(_this.items, function(value) {
             return value.remove();
           });
           _this.items = {};
-          _.each(newCollection.models, function(model) {
+          _.each(collection.models, function(model) {
             return _this.renderItem(model);
           });
           return _this.refreshPlugin();
