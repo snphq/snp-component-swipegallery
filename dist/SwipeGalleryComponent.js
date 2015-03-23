@@ -62,7 +62,17 @@ define(function(require, exports, module) {
       this.options.onChange = _.bind(this.onSliderChange, this);
       this.renderAsync = $.Deferred();
       this.initCollection();
-      return this.items = {};
+      this.items = {};
+      if (this.collection.models.length !== 0) {
+        return this.renderAsync.done((function(_this) {
+          return function() {
+            _.each(_this.collection.models, function(model) {
+              return _this.renderItem(model);
+            });
+            return _this.refreshPlugin();
+          };
+        })(this));
+      }
     };
 
     SwipeGalleryComponent.prototype.initCollection = function() {
@@ -75,12 +85,6 @@ define(function(require, exports, module) {
     };
 
     SwipeGalleryComponent.prototype.render = function() {
-      _.each(this.collection.models, (function(_this) {
-        return function(model) {
-          _this.renderItem(model);
-          return _this.refreshPlugin();
-        };
-      })(this));
       return this.renderAsync.resolve();
     };
 
