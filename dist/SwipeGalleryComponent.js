@@ -22,7 +22,9 @@ define(function(require, exports, module) {
   return SwipeGalleryComponent = (function(superClass) {
     extend(SwipeGalleryComponent, superClass);
 
-    SwipeGalleryComponent.prototype.template = "#SwipeGalleryComponent";
+    SwipeGalleryComponent.prototype.templateFunc = function() {
+      return "<div data-js-block class=\"swipe_gallery\">\n  <div class=\"ul_overflow\">\n    <ul data-js-list></ul>\n    <div data-js-side-left class=\"side_left\"></div>\n    <div data-js-side-right class=\"side_right\"></div>\n  </div>\n</div>";
+    };
 
     SwipeGalleryComponent.prototype.className = "swipegallery_component";
 

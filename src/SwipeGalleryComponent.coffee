@@ -16,7 +16,16 @@ define (require, exports, module)->
     view.extend {className}
 
   class SwipeGalleryComponent extends SuperView
-    template: "#SwipeGalleryComponent"
+    templateFunc: ->
+      """
+      <div data-js-block class="swipe_gallery">
+        <div class="ul_overflow">
+          <ul data-js-list></ul>
+          <div data-js-side-left class="side_left"></div>
+          <div data-js-side-right class="side_right"></div>
+        </div>
+      </div>
+      """
     className: "swipegallery_component"
 
     ui:
