@@ -91,7 +91,9 @@ define (require, exports, module)->
         _.each @items, (value)-> value.remove()
         @items = {}
         _.each collection.models, (model)=> @renderItem model
-        @refreshPlugin()
+        if @galery
+          @galery.destroy()
+        @galery = new SwipeGallery @options
 
     onSliderChange: (index, max, itemMas, dirrection)->
       galleryModels = []
