@@ -1,6 +1,6 @@
 {
   "name": "snp-component-swipegallery",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "homepage": "https://github.com/snphq/snp-component-swipegallery",
   "authors": [
     "Aleksey Krylov <aleksey.krylov@saltpepper.ru>",
@@ -25,7 +25,7 @@
     "tests"
   ],
   "dependencies": {
-    "swipegallery": "~0.4.0",
+    "swipegallery": "~1.0.0",
     "backbone-mixin": "~0.3.5"
   }
 }
