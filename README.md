@@ -21,8 +21,8 @@ Add js requirements reference to `main.coffee`
 require.config
   paths:
     ...
-    'Hammer':"#{VENDOR_PATH}/hammer.js/hammer.js"
-    'swipeGallery': "#{VENDOR_PATH}/swipegallery/src/SwipeGallery"
+    'Hammer':"#{VENDOR_PATH}/hammer.js/hammer"
+    'swipeGallery': "#{VENDOR_PATH}/swipegallery/dist/SwipeGallery"
     'SwipeGalleryComponent': "#{VENDOR_PATH}/snp-component-swipegallery/dist/SwipeGalleryComponent"
 
 ```
