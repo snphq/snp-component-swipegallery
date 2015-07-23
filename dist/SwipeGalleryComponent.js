@@ -1,4 +1,4 @@
-/*! snp-component-swipegallery 0.3.0 */
+/*! snp-component-swipegallery 0.4.1 */
 var extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
   hasProp = {}.hasOwnProperty;
 
@@ -58,10 +58,10 @@ define(function(require, exports, module) {
       if (options == null) {
         options = {};
       }
-      this.options = _.defaults(options, {
-        selector: this.ui.galleryBlock
+      this.options = _.extend(options, {
+        selector: this.ui.galleryBlock,
+        onChange: _.bind(this.onSliderChange, this)
       });
-      this.options.onChange = _.bind(this.onSliderChange, this);
       this.renderAsync = $.Deferred();
       this.initCollection();
       this.items = {};
@@ -165,6 +165,24 @@ define(function(require, exports, module) {
 
     SwipeGalleryComponent.prototype.setOptions = function(options) {
       return _.extend(this.options, options);
+    };
+
+    SwipeGalleryComponent.prototype.updateOptions = function(options) {
+      if (this.galery) {
+        return this.galery.updateOptions(options);
+      }
+    };
+
+    SwipeGalleryComponent.prototype.lock = function() {
+      if (this.galery) {
+        return this.galery.lock();
+      }
+    };
+
+    SwipeGalleryComponent.prototype.unLock = function() {
+      if (this.galery) {
+        return this.galery.unLock();
+      }
     };
 
     SwipeGalleryComponent.prototype.onControlClick = function(e) {

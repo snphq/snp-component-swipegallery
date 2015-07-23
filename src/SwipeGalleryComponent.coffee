@@ -50,10 +50,10 @@ define (require, exports, module)->
 
     initialize: ({options})->
       options ?= {}
-      @options = _.defaults options, {
+      @options = _.extend options, {
         selector: @ui.galleryBlock
+        onChange: _.bind @onSliderChange, this
       }
-      @options.onChange = _.bind @onSliderChange, this
       @renderAsync = $.Deferred()
       @initCollection()
       @items = {}
@@ -110,6 +110,17 @@ define (require, exports, module)->
 
     setOptions: (options)->
       _.extend @options, options
+
+    updateOptions: (options)->
+      if @galery
+        @galery.updateOptions options
+
+    lock: ->
+      if @galery
+        @galery.lock()
+    unLock: ->
+      if @galery
+        @galery.unLock()
 
     onControlClick: (e)->
       @galery.goTo $(e.currentTarget).index()
