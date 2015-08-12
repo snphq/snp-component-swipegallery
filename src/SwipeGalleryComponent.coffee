@@ -1,5 +1,6 @@
 define (require, exports, module)->
   Backbone = require "backbone"
+  require 'epoxy'
   SuperView = MixinBackbone(Backbone.Epoxy.View)
 
   SwipeGallery = require 'swipeGallery'

@@ -5,6 +5,7 @@ var extend = function(child, parent) { for (var key in parent) { if (hasProp.cal
 define(function(require, exports, module) {
   var Backbone, SuperView, SwipeGallery, SwipeGalleryCollection, SwipeGalleryComponent, SwipeGalleryModel, extendItemView;
   Backbone = require("backbone");
+  require('epoxy');
   SuperView = MixinBackbone(Backbone.Epoxy.View);
   SwipeGallery = require('swipeGallery');
   SwipeGalleryModel = Backbone.Epoxy.Model;
